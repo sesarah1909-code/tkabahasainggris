@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ujian TKA Bahasa Inggris</title>
+  <style>
+    <style>
+  :root {
+    --bg: #f7f8fb;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --accent: #0f172a;
+    --green: #10b981;
+    --orange: #f59e0b;
+    --gray: #e6e9ef;
+  }
+  * {
+    box-sizing: border-box;
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--accent);
+  }
+  .container {
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 20px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 6px 20px rgba(15,23,42,0.06);
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0;
+  }
+  .muted {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* Login */
+  .login-grid {
+    display: grid;
+    gap: 12px;
+    max-width: 420px;
+    margin: 40px auto;
+  }
+  label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  input[type=text],
+  input[type=password] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #dbe4f0;
+  }
+
+  /* Tombol utama */
+  button {
+    background: #0ea5a4;
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  /* Layout */
+  .exam-layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 18px;
+  }
+  .question-area {
+    min-height: 420px;
+  }
+  .q-card {
+    padding: 18px;
+    border-radius: 10px;
+  }
+  .q-number {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 18px;
+    margin: 8px 0 14px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .option {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e6e9ef;
+    cursor: pointer;
+  }
+  .option.selected {
+    border-color: var(--accent);
+    background: #f1f5f9;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 14px;
+  }
+
+  /* Tombol ghost (agar teks terlihat jelas) */
+  .btn-ghost {
+    background: #f9fafb;
+    color: #111827 !important;
+    border: 1px solid #d1d5db;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .btn-ghost:hover {
+    background: #e5e7eb;
+  }
+
+  .nav-panel {
+    position: relative;
+  }
+  .nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .nav-item {
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .nav-item.unanswered {
+    background: #ffffff;
+    color: var(--muted);
+    border: 1px dashed #e6e9ef;
+  }
+  .nav-item.answered {
+    background: #ecfdf5;
+    color: var(--green);
+  }
+  .nav-item.doubt {
+    background: #fff7ed;
+    color: var(--orange);
+  }
+  .small {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .topbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .timer {
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #111827;
+    color: white;
+  }
+  .right-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* Halaman hasil */
+  .score-summary {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  .big {
+    font-size: 36px;
+    font-weight: 800;
+  }
+  .result-list {
+    margin-top: 12px;
+  }
+  .hidden {
+    display: none;
+  }
+
+  /* Responsif */
+  @media (max-width: 900px) {
+    .exam-layout {
+      grid-template-columns: 1fr;
+    }
+    .nav-panel {
+      order: -1;
+    }
+  }
+</style>
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="loginView" class="card login-card">
+      <header>
+        <h1>Ujian TKA Bahasa Inggris</h1>
+        <div class="muted">Durasi: 90 menit • 30 soal</div>
+      </header>
+      <div class="login-grid">
+        <div>
+          <label>Username</label>
+          <input id="username" type="text" placeholder="Masukkan username">
+        </div>
+        <div>
+          <label>Password</label>
+          <input id="password" type="password" placeholder="Masukkan password">
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="loginBtn">Masuk & Mulai Ujian</button>
+          <div class="small">Akun dapat dilihat di email masing-masing</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="examView" class="hidden">
+      <div class="card q-card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h1 id="examTitle">Ujian TKA - Bahasa Inggris</h1>
+            <div class="small">Silakan kerjakan. Gunakan tombol Ragu jika tidak yakin.</div>
+          </div>
+          <div class="topbar">
+            <div class="timer" id="timer">90:00</div>
+            <div class="right-actions">
+              <button id="toggleNav" class="btn-ghost">Tampilkan Navigasi</button>
+              <button id="toggleCam" class="btn-ghost">Tampilkan Kamera</button>
+              <button id="submitExam" class="btn-ghost">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px" class="exam-layout">
+          <div class="question-area">
+            <div class="q-number">Soal <span id="qIndex">1</span> / 30</div>
+            <div class="q-text" id="qText">Pertanyaan akan muncul di sini</div>
+            <div class="options" id="options"></div>
+
+            <div class="controls">
+              <button id="prevBtn" class="btn-ghost">Kembali</button>
+              <button id="nextBtn" class="btn-ghost">Selanjutnya</button>
+              <button id="markDoubt" class="btn-ghost">Tandai Ragu</button>
+              <div style="margin-left:auto" class="small">Jawaban: <span id="answeredCount">0</span>/30</div>
+            </div>
+          </div>
+
+          <div class="nav-panel card" style="padding:12px">
+            <div class="nav-header">
+              <div><strong>Navigasi Soal</strong><div class="small">Warna: <span style="color:var(--green)">Terjawab</span>, <span style="color:var(--orange)">Ragu-ragu</span>, <span style="color:var(--muted)">Belum</span></div></div>
+              <div><button id="hideNav" class="btn-ghost">Sembunyikan</button></div>
+            </div>
+            <div id="navGrid" class="nav-grid"></div>
+            <div style="margin-top:10px" class="small">Klik angka untuk lompat ke soal. Tombol navigasi bisa disembunyikan.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="cameraPanel" class="card hidden" style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Kamera Pengawasan</strong><div class="small">Video hanya tampil di browser — tidak diunggah.</div></div>
+          <div><button id="stopCamBtn" class="btn-ghost">Sembunyikan Kamera</button></div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+          <video id="localVideo" autoplay playsinline style="max-width:320px;border-radius:8px;border:1px solid #e6e9ef"></video>
+          <div class="small">Status kamera: <span id="camStatus">Mati</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="scoreView" class="hidden card" style="margin-top:14px">
+      <header style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Hasil Ujian</h1>
+        <div class="small">Terima kasih telah mengerjakan.</div>
+      </header>
+      <div class="score-summary" style="margin-top:12px">
+        <div class="big" id="scoreNumber">0</div>
+        <div>
+          <div class="small">Skor Benar</div>
+          <div id="scorePercent" style="font-weight:700;font-size:18px">0%</div>
+        </div>
+        <div style="margin-left:auto">
+          <button id="restartBtn" class="btn-ghost">Mulai Ulang</button>
+        </div>
+      </div>
+
+      <div class="result-list" id="resultList"></div>
+    </div>
+
+  </div>
+
+<script>
+// --- Hardcoded users ---
+const USERS = {
+  'admin': 'admin',
+  'guru1': 'guru1',
+  'siswa1': 'siswa1'
+};
+
+// --- Questions bank (30 soal) ---
+// Each question: {q, choices:[...], answer: index (0-3), difficulty}
+const QUESTIONS = [
+  {q:'Choose the correct plural form: "child"', choices:['childs','childes','children','child'], answer:2, difficulty:'easy'},
+  {q:'Choose the best word: "She ___ to the store yesterday."', choices:['go','went','gone','going'], answer:1, difficulty:'easy'},
+  {q:'Pick the correct preposition: "He is good ___ math."', choices:['in','at','on','for'], answer:1, difficulty:'easy'},
+  {q:'Choose the correct sentence:', choices:['I have visited Paris last year.','I visited Paris last year.','I visit Paris last year.','I was visit Paris last year.'], answer:1, difficulty:'medium'},
+  {q:'Which word is a synonym of "quick"?', choices:['slow','rapid','late','sluggish'], answer:1, difficulty:'easy'},
+  {q:'Choose correct modal: "You ___ smoke here."', choices:['must','can','may not','mustn\'t'], answer:3, difficulty:'medium'},
+  {q:'Pick the correct passive form: "They build the house in 2000."', choices:['The house was built in 2000.','The house built in 2000.','The house is built in 2000.','The house has built in 2000.'], answer:0, difficulty:'medium'},
+  {q:'Which sentence is punctuated correctly?', choices:['Whats your name?','What\'s your name?','Whats your name.','What\'s your name.'], answer:1, difficulty:'easy'},
+  {q:'Choose the correct conditional: "If I ___ rich, I would travel the world."', choices:['am','were','was','be'], answer:1, difficulty:'hard'},
+  {q:'Which is an adjective?', choices:['happiness','quick','run','swiftly'], answer:1, difficulty:'easy'},
+  {q:'Choose the correct comparative: "This test is ___ than the last one."', choices:['easier','more easy','most easy','easiest'], answer:0, difficulty:'easy'},
+  {q:'Fill the blank: "He recommended ___ early."', choices:['to come','coming','come','came'], answer:1, difficulty:'medium'},
+  {q:'Which sentence uses reported speech correctly?', choices:['She said she will go.','She said she would go.','She said she going to go.','She said she gone.'], answer:1, difficulty:'medium'},
+  {q:'Choose correct article: "___ university is in the city."', choices:['A','An','The','No article'], answer:0, difficulty:'easy'},
+  {q:'Pick the correct phrasal verb: "We need to ___ the meeting." (postpone)', choices:['put off','put up','put away','put on'], answer:0, difficulty:'medium'},
+  {q:'Which word is opposite of "ancient"?', choices:['old','modern','aged','antique'], answer:1, difficulty:'medium'},
+  {q:'Choose the gerund: "___ is fun."', choices:['To swim','Swim','Swimming','Swam'], answer:2, difficulty:'easy'},
+  {q:'Identify the error: "She don\'t like apples."', choices:['She','don\'t','like','apples'], answer:1, difficulty:'easy'},
+  {q:'Choose correct infinitive usage: "I asked him ___ the door."', choices:['to close','closing','closed','close'], answer:0, difficulty:'medium'},
+  {q:'Select the best connector: "I studied hard; ___, I failed the exam."', choices:['however','because','so','and'], answer:0, difficulty:'hard'},
+  {q:'Which sentence is passive voice?', choices:['They will finish the work.','The work will be finished by them.','They finished the work.','They are finishing the work.'], answer:1, difficulty:'medium'},
+  {q:'Choose the correct tense: "By next year I ___ here for five years."', choices:['will be','will have been','have been','am'], answer:1, difficulty:'hard'},
+  {q:'Which is a countable noun?', choices:['information','advice','apple','water'], answer:2, difficulty:'easy'},
+  {q:'Pick the correct word: "He has ___ his homework."', choices:['do','did','done','doing'], answer:2, difficulty:'easy'},
+  {q:'Choose correct spelling:', choices:['accomodate','accommodate','acommodate','accommadate'], answer:1, difficulty:'medium'},
+  {q:'Which sentence is an example of a question tag?', choices:['You are coming, aren\'t you?','You are coming?','Are you coming, you?','You aren\'t coming.'], answer:0, difficulty:'medium'},
+  {q:'Choose the best meaning of "significant"', choices:['small','important','rare','beautiful'], answer:1, difficulty:'medium'},
+  {q:'Pick the correct reduction: "I would (I\'d) rather ___ home."', choices:['to stay','stay','staying','stayed'], answer:1, difficulty:'hard'},
+  {q:'Choose the correct order: "She gave him ___." (a book)', choices:['a book','book a','the book a','book the a'], answer:0, difficulty:'easy'},
+  {q:'She is foolish. The antonym of "foolish" is:', choices:['Brainy','Dumb','Idiotic','Wise'], answer:0, difficulty:'easy'}
+];
+
+// Ensure we have 30 items (we added 29 above?) Let's check length and if less, duplicate some with slight changes.
+if(QUESTIONS.length < 30){
+  const extraNeeded = 30 - QUESTIONS.length;
+  for(let i=0;i<extraNeeded;i++){
+    QUESTIONS.push({q:`Tambahan soal ${i+1}: Choose A, B, C or D`, choices:['A','B','C','D'], answer:0, difficulty:'easy'});
+  }
+}
+
+// --- State ---
+let state = {
+  user: null,
+  current: 0,
+  answers: Array(QUESTIONS.length).fill(null), // store selected index
+  doubt: Array(QUESTIONS.length).fill(false),
+  startedAt: null,
+  remainingSec: 90*60,
+  timerInterval: null,
+  stream: null
+};
+
+// DOM refs
+const loginView = document.getElementById('loginView');
+const examView = document.getElementById('examView');
+const scoreView = document.getElementById('scoreView');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const loginBtn = document.getElementById('loginBtn');
+const qIndex = document.getElementById('qIndex');
+const qText = document.getElementById('qText');
+const optionsEl = document.getElementById('options');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const markDoubtBtn = document.getElementById('markDoubt');
+const navGrid = document.getElementById('navGrid');
+const toggleNav = document.getElementById('toggleNav');
+const hideNav = document.getElementById('hideNav');
+const toggleCam = document.getElementById('toggleCam');
+const cameraPanel = document.getElementById('cameraPanel');
+const localVideo = document.getElementById('localVideo');
+const camStatus = document.getElementById('camStatus');
+const stopCamBtn = document.getElementById('stopCamBtn');
+const timerEl = document.getElementById('timer');
+const answeredCountEl = document.getElementById('answeredCount');
+const submitExam = document.getElementById('submitExam');
+const scoreNumber = document.getElementById('scoreNumber');
+const scorePercent = document.getElementById('scorePercent');
+const resultList = document.getElementById('resultList');
+const restartBtn = document.getElementById('restartBtn');
+
+// --- Helpers ---
+function formatTime(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,'0');
+  const s = (sec%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+function renderQuestion(idx){
+  const item = QUESTIONS[idx];
+  qIndex.textContent = idx+1;
+  qText.textContent = item.q + ` (${item.difficulty})`;
+  optionsEl.innerHTML = '';
+  item.choices.forEach((opt, i)=>{
+    const d = document.createElement('div');
+    d.className = 'option' + (state.answers[idx]===i ? ' selected' : '');
+    d.tabIndex = 0;
+    d.textContent = String.fromCharCode(65+i) + '. ' + opt;
+    d.addEventListener('click', ()=> selectOption(idx,i));
+    d.addEventListener('keydown', (e)=>{ if(e.key==="Enter") selectOption(idx,i); });
+    optionsEl.appendChild(d);
+  });
+  // update doubt button label
+  markDoubtBtn.textContent = state.doubt[idx] ? 'Batal Tandai Ragu' : 'Tandai Ragu';
+  updateAnsweredCount();
+  highlightNav(idx);
+}
+
+function selectOption(qIdx, optIdx){
+  state.answers[qIdx] = optIdx;
+  renderQuestion(qIdx);
+  renderNav();
+}
+
+function updateAnsweredCount(){
+  const answered = state.answers.filter(a=>a!==null).length;
+  answeredCountEl.textContent = answered;
+}
+
+function renderNav(){
+  navGrid.innerHTML = '';
+  QUESTIONS.forEach((_, i)=>{
+    const b = document.createElement('div');
+    b.className = 'nav-item ' + (state.answers[i]===null ? 'unanswered' : 'answered');
+    if(state.doubt[i]){ b.className = 'nav-item doubt'; }
+    b.textContent = i+1;
+    b.addEventListener('click', ()=>{ state.current = i; renderQuestion(i); });
+    navGrid.appendChild(b);
+  });
+}
+
+function highlightNav(i){
+  const items = navGrid.children;
+  for(let k=0;k<items.length;k++){
+    items[k].style.outline = k===i ? '2px solid rgba(15,23,42,0.08)' : 'none';
+  }
+}
+
+function startTimer(){
+  if(state.timerInterval) clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(()=>{
+    state.remainingSec--;
+    if(state.remainingSec <= 0){
+      clearInterval(state.timerInterval);
+      timerEl.textContent = '00:00';
+      alert('Waktu habis. Soal akan disubmit otomatis.');
+      finishExam();
+      return;
+    }
+    timerEl.textContent = formatTime(state.remainingSec);
+  },1000);
+}
+
+function finishExam(){
+  // stop camera
+  stopCamera();
+  // compute score
+  const correct = QUESTIONS.reduce((acc,q,i)=> acc + ((state.answers[i]===q.answer)?1:0), 0);
+  showScore(correct);
+}
+
+function showScore(correct){
+  loginView.classList.add('hidden');
+  examView.classList.add('hidden');
+  scoreView.classList.remove('hidden');
+  scoreNumber.textContent = correct + ' / ' + QUESTIONS.length;
+  const pct = Math.round((correct/QUESTIONS.length)*100);
+  scorePercent.textContent = pct + '%';
+  // render detail
+  resultList.innerHTML = '';
+  QUESTIONS.forEach((q,i)=>{
+    const el = document.createElement('div');
+    el.style.padding='8px';el.style.borderBottom='1px solid #f1f5f9';
+    const your = state.answers[i]===null ? '-' : String.fromCharCode(65+state.answers[i]);
+    const correctOpt = String.fromCharCode(65+q.answer);
+    const ok = (state.answers[i]===q.answer);
+    el.innerHTML = `<div style="display:flex;gap:12px;align-items:center"><div style="width:36px">${i+1}</div><div style="flex:1"><div><strong>${q.q}</strong></div><div class="small">Jawaban Anda: ${your} • Benar: ${correctOpt} ${ok?'<span style="color:var(--green);font-weight:600">(Benar)</span>':'<span style="color:#ef4444;font-weight:600">(Salah)</span>'}</div></div></div>`;
+    resultList.appendChild(el);
+  });
+}
+
+// --- Camera handling ---
+async function startCamera(){
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    try{
+      state.stream = await navigator.mediaDevices.getUserMedia({video:{width:320}, audio:false});
+      localVideo.srcObject = state.stream;
+      camStatus.textContent = 'Aktif';
+      toggleCam.textContent = 'Sembunyikan Kamera';
+      cameraPanel.classList.remove('hidden');
+    }catch(err){
+      alert('Tidak dapat mengakses kamera. Periksa izin browser.');
+      camStatus.textContent = 'Error';
+    }
+  }else{
+    alert('Browser tidak mendukung kamera.');
+  }
+}
+
+function stopCamera(){
+  if(state.stream){
+    state.stream.getTracks().forEach(t=>t.stop());
+    state.stream = null;
+  }
+  localVideo.srcObject = null;
+  camStatus.textContent = 'Mati';
+  toggleCam.textContent = 'Tampilkan Kamera';
+  cameraPanel.classList.add('hidden');
+}
+
+// --- Events ---
+loginBtn.addEventListener('click', ()=>{
+  const u = usernameInput.value.trim();
+  const p = passwordInput.value.trim();
+  if(!u||!p){ alert('Isi username dan password.'); return; }
+  if(USERS[u] && USERS[u]===p){
+    state.user = u;
+    loginView.classList.add('hidden');
+    examView.classList.remove('hidden');
+    state.startedAt = Date.now();
+    // reset state
+    state.current = 0; state.answers = Array(QUESTIONS.length).fill(null); state.doubt = Array(QUESTIONS.length).fill(false);
+    state.remainingSec = 90*60;
+    timerEl.textContent = formatTime(state.remainingSec);
+    renderNav(); renderQuestion(0);
+    startTimer();
+  }else{ alert('Username atau password salah. (Gunakan username dan password yang sudah dibagikan)'); }
+});
+
+prevBtn.addEventListener('click', ()=>{
+  if(state.current>0){ state.current--; renderQuestion(state.current); }
+});
+nextBtn.addEventListener('click', ()=>{
+  if(state.current<QUESTIONS.length-1){ state.current++; renderQuestion(state.current); }
+});
+
+markDoubtBtn.addEventListener('click', ()=>{
+  state.doubt[state.current] = !state.doubt[state.current];
+  markDoubtBtn.textContent = state.doubt[state.current] ? 'Batal Tandai Ragu' : 'Tandai Ragu';
+  renderNav();
+});
+
+hideNav.addEventListener('click', ()=>{
+  document.querySelector('.nav-panel').classList.toggle('hidden');
+  toggleNav.textContent = document.querySelector('.nav-panel').classList.contains('hidden') ? 'Tampilkan Navigasi' : 'Sembunyikan Navigasi';
+});
+
+toggleNav.addEventListener('click', ()=>{
+  document.querySelector('.nav-panel').classList.toggle('hidden');
+  toggleNav.textContent = document.querySelector('.nav-panel').classList.contains('hidden') ? 'Tampilkan Navigasi' : 'Sembunyikan Navigasi';
+});
+
+toggleCam.addEventListener('click', ()=>{
+  if(state.stream){ stopCamera(); }
+  else{ startCamera(); }
+});
+stopCamBtn.addEventListener('click', ()=> stopCamera());
+
+submitExam.addEventListener('click', ()=>{
+  if(confirm('Anda yakin ingin submit? Setelah submit, tidak bisa mengubah jawaban.')){
+    finishExam();
+  }
+});
+
+restartBtn.addEventListener('click', ()=>{
+  if(confirm('Mulai ulang ujian? Semua data saat ini akan hilang.')){
+    location.reload();
+  }
+});
+
+// autosave answers to sessionStorage every 10s
+setInterval(()=>{
+  if(state.user){
+    try{ sessionStorage.setItem('exam_state_'+state.user, JSON.stringify({answers:state.answers,doubt:state.doubt,current:state.current,remainingSec:state.remainingSec})); }catch(e){}
+  }
+},10000);
+
+// try to restore
+window.addEventListener('load', ()=>{
+  const lastUser = Object.keys(USERS)[0];
+  // nothing auto-restored until login for simplicity
+});
+
+// Keyboard shortcuts
+window.addEventListener('keydown',(e)=>{
+  if(!examView.classList.contains('hidden')){
+    if(e.key==='ArrowRight') nextBtn.click();
+    if(e.key==='ArrowLeft') prevBtn.click();
+    if(['1','2','3','4'].includes(e.key)){
+      const v = parseInt(e.key)-1; selectOption(state.current,v);
+    }
+  }
+});
+
+</script>
+</body>
+</html>
